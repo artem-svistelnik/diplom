@@ -1,0 +1,96 @@
+{% extends 'diplomapp/test_base.html' %}
+{% load static %}
+{% load  bootstrap4 %}
+{% load mptt_tags %}
+
+
+    <title> {% block title %}base page{% endblock %}</title>
+
+{% block content %}
+<div class="wrapper">
+<div class="button list-group-item">Категории</div>
+
+<div class="content-test">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light col-lg-12 col-md-12 col-sm-12 ">
+
+  <div class="collapse navbar-collapse " id="navbarNavDropdown">
+      <ul class="navbar-nav row">
+          {% recursetree nodes %}
+          <li class="nav-item dropdown li-fixed   ">
+
+              <a href="{% url 'diplomapp:product_on_category' node.id node.slug %}" class="nav-link dropdown-toggle"  >
+                 {{ node.name }} {{ node.count_product }}
+              </a>
+                {% if node.is_root_node %}
+                        {% if not node.is_leaf_node %}
+                            <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+                            <ul class="children navbar-nav float-lg-left text-left">
+                                 <li class="">{{children }}</li>
+                            </ul>
+                            </div>
+                        {% endif %}
+                {% else  %}
+                {% if not node.is_leaf_node %}
+
+                     <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="children navbar-nav float-lg-left text-left">
+                            <li>{{children }}</li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+
+                {% endif %}
+
+          </li>
+         {% endrecursetree %}
+    </ul>
+  </div>
+
+</nav>
+</div>
+</div>
+{% endblock %}
+
+{#СТОКОВЫЕ КАТЕГОРИИ#}
+
+
+
+{#<nav class="navbar navbar-expand-lg navbar-light bg-light col-lg-12 col-md-12 col-sm-12 ">#}
+{##}
+{#  <div class="collapse navbar-collapse " id="navbarNavDropdown">#}
+{#      <ul class="navbar-nav row">#}
+{#          {% recursetree nodes %}#}
+{#          <li class="nav-item dropdown li-fixed  text-center ">#}
+{##}
+{#              <a href="{% url 'diplomapp:product_on_category' node.id node.slug %}" class="nav-link dropdown-toggle"  >#}
+{#                 {{ node.name }} {{ node.count_product }}#}
+{#              </a>#}
+{#                {% if node.is_root_node %}#}
+{#                        {% if not node.is_leaf_node %}#}
+{#                            <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">#}
+{#                            <ul class="children navbar-nav float-lg-left text-left">#}
+{#                                 <li class="">{{children }}</li>#}
+{#                            </ul>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+{#                {% else  %}#}
+{#                {% if not node.is_leaf_node %}#}
+{##}
+{#                     <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">#}
+{#                        <ul class="children navbar-nav float-lg-left text-left">#}
+{#                            <li>{{children }}</li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                {% endif %}#}
+{##}
+{##}
+{#                {% endif %}#}
+{##}
+{#          </li>#}
+{#         {% endrecursetree %}#}
+{#    </ul>#}
+{#  </div>#}
+{##}
+{#</nav>#}

@@ -1,0 +1,88 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% load static %}
+{% block title %}
+    Заказ
+{% endblock %}
+{% block content %}
+    <h1 class="bg-ruby text-white p-2 text-center">Заказ № {{ order.id }}</h1>
+   <div class="card">
+       <div class="card-header">
+           <h2 class="text-center">Информация о заказчике</h2>
+       </div>
+        <table class="table-bordered table-hover table-striped text-center">
+            <thead>
+            <tr class="text-white " style="background-color: #e21e25">
+                        <th class="pt-2 pb-2">Имя</th>
+                        <th>Фамилия</th>
+                        <th>Нормет телефона</th>
+                        <th>Email</th>
+                        <th>Город</th>
+                        <th>Адрес</th>
+                    </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td scope="row" class="pt-3 pb-3">{{ order.first_name }}</td>
+                    <td>{{ order.last_name }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>{{ order.email }}</td>
+                    <td>{{ order.city }}</td>
+                    <td>{{ order.address }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="card-header">
+            <h2 class="text-center">Информация о товарах</h2>
+        </div>
+        <table class="table-bordered table-hover table-striped text-center">
+            <thead>
+                    <tr class="text-white" style="background-color: #e21e25">
+                        <th class="text-center pt-3 pb-3">ID</th>
+                        <th>Название</th>
+                        <th>Количество</th>
+                        <th>Цена за 1 товар (Грн.)</th>
+                        <th>Цена * количество (Грн.)</th>
+                    </tr>
+                </thead>
+            <tbody>
+{#                {% for order_items_form in order_items_forms %}#}
+                {% for order_item  in order_items  %}
+{#                    {% bootstrap_form order_items_form %}#}
+                    <tr>
+                        <td class="pt-3 pb-3">
+                            {{ order_item.id }}
+                        </td>
+                        <td>
+                            <a href="{% url 'diplomapp:product_detail' order_item.product.slug  order_item.product.id %}">
+                                {{order_item.product.product_name }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ order_item.quantity }}
+                        </td>
+                        <td>
+                            {{ order_item.price }}
+                        </td>
+                        <td>
+                            {{ order_item.get_cost }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h4 class="mt-lg-2">Общаяя сума заказа: {{ total_price }} Грн.</h4>
+        <h4 class="mt-lg-2">Статус: {% if order.status == False %}
+                                <span class="text-red">Не обработан</span>
+                            {% else %}
+                                <span class="text-green">Обработан</span>
+                            {% endif %}
+            <a href="{% url 'diplomapp:update_status_order' order.id %}" class="btn btn-red"> Изменить</a>
+        </h4>
+
+
+    </div>
+
+{% endblock %}

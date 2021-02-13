@@ -1,0 +1,31 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% load static %}
+{% block title %}
+    Заказ
+{% endblock %}
+{% block content %}
+    <h1 class="bg-ruby text-white p-2 text-center">Форма заказа</h1>
+    <div class="offset-lg-2 col-lg-8">
+        <h1>Заполните данные для оформления заказа</h1>
+        <div class="order-info ">
+            <h3>Ваш заказ</h3>
+            <ul>
+                {% for item in cart %}
+                    <li>
+                        {{ item.quantity }}x {{ item.product.product_name }}
+                        <span>{{ item.total_price }} Грн.</span>
+                    </li>
+                {% endfor %}
+                <a href="{% url 'diplomapp:cart_detail' %}" class="btn btn-danger m-2">Изменить</a>
+            </ul>
+            <p>Сума заказа: {{ cart.get_total_price }} Грн.</p>
+
+        </div>
+        <form action="." method="post" class="order-form">
+            {% bootstrap_form form %}
+            <p><input type="submit" value="Отправить заказ" class="btn btn-success"></p>
+            {% csrf_token %}
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% load static %}
+{% block title %}
+    Корзина
+{% endblock %}
+{% block content %}
+    <h1 class="bg-ruby text-white p-2 text-center">Ваша корзина</h1>
+    <div class="offset-lg-1 col-lg-10">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">Изображение</th>
+                    <th scope="col" class="text-center">Товар</th>
+                    <th scope="col" class="text-center">Количество</th>
+                    <th scope="col" class="text-center">Цена за еденицу товара</th>
+                    <th scope="col" class="text-center">Цена</th>
+                    <th scope="col" class="text-center">Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    {% with product=item.product %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{% if product.image %}{{ MEDIA_URL }}{{ product.image }}
+                                    {% else %}{% static "img/no_image.png" %}{% endif %} " style="width: 80px;height: auto">
+                                 </a>
+                            </td>
+                            <td>{{ product.product_name }}</td>
+
+                            <td class="text-center">
+                                <form action="{% url "diplomapp:cart_add" product.id %}" method="post">
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.update }}
+                                    <input type="submit" value="Обновить" class="btn btn-success mt-2">
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                            <td class="text-center">{{ item.price }} Грн.</td>
+                            <td class=" text-center">{{ item.total_price }} Грн.</td>
+                            <td><a href="{% url "diplomapp:cart_remove" product.id%}" class="btn btn-dark">Удалить товар</a></td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+{#                <tr class="bg-total-price">#}
+{#                    <td><h3>Сума заказа</h3></td>#}
+{#                    <td colspan="4"></td>#}
+{#                    <td class="num"><h3><b>{{ cart.get_total_price }}</b> Грн.</h3></td>#}
+{#                </tr>#}
+            </tbody>
+        </table>
+        <div class="bg-total-price p-2 mt-3 mb-3 text-center">
+            <h3>Сума заказа <b>{{ cart.get_total_price }}</b> Грн.</h3>
+        </div>
+
+        <p class="text-center">
+            <a href="{% url "diplomapp:products" %}" class="btn btn-secondary">Продолжить покупки</a>
+            <a href="{% url "diplomapp:order_create" %}" class="btn btn-red">
+                Оформить заказ
+            </a>
+        </p>
+    </div>
+{% endblock %}

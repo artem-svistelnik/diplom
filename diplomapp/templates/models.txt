@@ -1,0 +1,35 @@
+#product_det=get_object_or_404(Product,slug=product,id=product_id)
+#images=ProductImages.objects.filter(product=product_det)
+
+
+    class Product(models.Model):
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, verbose_name='Магазин')
+    product_name = models.CharField(max_length=30, verbose_name='Название товара')
+    category = models.ManyToManyField(Category, verbose_name='Категория', blank=True, default=None, null=True)
+    slug = models.SlugField(max_length=250, unique_for_date='created', blank=True)
+    short_description = models.CharField(max_length=100, verbose_name='Короткое описание')
+    description = models.TextField(max_length=1000,verbose_name='Полное описание')
+    image = models.ImageField(upload_to='product_images/', blank=False, verbose_name='Изображение')
+    price = models.PositiveIntegerField(default=0,verbose_name='Цена грн.')
+    created = models.DateTimeField(default=timezone.now)
+    availability=models.BooleanField(default=True,verbose_name='Наличие')
+
+
+    def __str__(self):
+        return self.product_name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.product_name)
+        return super(Product, self).save(*args, **kwargs)
+
+
+def save_images(instance,filename):
+    shop_id=instance.product.shop.id
+    id=instance.product.id
+    return 'gallery_images/{}/{}/{}'.format(shop_id,id,filename)
+
+
+class ProductImages(models.Model):
+    product=models.ForeignKey(Product, on_delete=models.CASCADE,default=None)
+    product_image = models.ImageField(upload_to=save_images, blank=True, verbose_name='Галерея изображений')
+

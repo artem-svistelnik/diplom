@@ -1,0 +1,64 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% load mptt_tags %}
+{% load rupluralize %}
+{% block title %}
+    Товары
+{% endblock %}
+
+{% block content %}
+{#  ##################3      #}
+<div class="card">
+            <div class="card-header bg-ruby ">
+{#                {% if category != None %}#}
+{#                    <h4 class="card-title text-center text-white">#}
+{#                        Предложения категории <b>{{category.name}}</b>#}
+{#                    </h4>#}
+{#                {% elif shop != None %}#}
+{#                    <h4 class="card-title text-center text-white">Товары магазина <b>{{shop.name}}</b></h4>#}
+{#                {% else %}#}
+                    <h4 class="card-title text-center text-white">Товары и услуги</h4>
+{#                {% endif %}#}
+{#                #}
+            </div>
+        </div>
+
+
+   {% if query %}
+        <h1>Posts containing "{{ query }}"</h1>
+        <h3>
+            {% with results.count as total_results %}
+            Found {{ total_results }} result {{ total_results|rupluralize }}
+        {% endwith %}
+        </h3>
+               <div class="container-fluid">
+            <div class="row">
+                {% for product in results %}
+                      <div class="col-lg-4 col-md-6 col-sm-12 mt-lg-4">
+                        <div class="card card-size" >
+                            <div class="img-place text-center ">
+                                <img src="{{ MEDIA_URL }}{{ product.image }}" class="card-img-top img-size" alt="...">
+                            </div>
+                            <div class="card-body card-body-size">
+                                <h5 class="card-title">{{ product.product_name }}</h5>
+                                <p class="card-text">{{ product.short_description|truncatewords:30}}</p>
+                                <a href="{% url 'home:product_detail' product.slug product.id %}" class="btn btn-primary btn-place">Посмотреть</a>
+                            </div>
+                        </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+       <p><a href="{% url 'diplomapp:search' %}">Search again</a></p>
+   {% else %}
+        <h1>Search for posts</h1>
+        <form action="." method="get">
+            {{ search_form.as_p }}
+            <input type="submit" value="Search">
+        </form>
+   {% endif %}
+
+
+
+
+{% endblock %}

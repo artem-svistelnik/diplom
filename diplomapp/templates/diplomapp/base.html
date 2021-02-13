@@ -1,0 +1,80 @@
+{% extends 'base_temp.html' %}
+{% load  bootstrap4 %}
+{% load static %}
+{% load rupluralize %}
+{% block title %}
+    Home page
+{% endblock %}
+
+{% block sidebar %}
+    {% if request.user.is_authenticated %}
+        <div class="text-center">
+                <img src="{{ MEDIA_URL }}{{ request.user.shop.logo }}" width="90px"  height="90px " class="rounded-circle" alt="">
+                <br>
+                <br>
+                <h4>Привет, {{ request.user.first_name|truncatechars:10 }}<br>
+                            {{request.user.last_name |truncatechars:12 }}
+                </h4>
+                <h5>{{ request.user.shop.name |truncatechars:10}}</h5>
+        </div>
+        <div class="list-group">
+                    {% with total_items=cart|length %}
+                        {% if cart|length > 0 %}
+                           <span class="text-uppercase">Ваша корзина:</span>
+                            <a class="list-group-item" href="{% url "diplomapp:cart_detail" %}">
+                            {{ total_items }} {{ total_items|rupluralize:"товар,товара,товаров" }},
+                            {{ cart.get_total_price }} Грн.
+                            </a>
+                        {% else %}
+{#                            <span class="text-uppercase">Корзина пуста</span>#}
+
+                        {% endif %}
+                    {% endwith %}
+                <span class="text-uppercase">Панель</span>
+                <a href="{% url 'diplomapp:my_products' %}" {% if request.path  == '/sitename/my-products/' %}style="background-color: #3f1e1e" {% endif %}  class="list-group-item">Мои товары</a>
+                <a href="{% url 'diplomapp:orders_list_page' %}" {% if request.path  == '/sitename/orders_page/' %}style="background-color: #3f1e1e" {% endif %}  class="list-group-item">Мои Заказы</a>
+
+                <a href="{% url 'diplomapp:products' %}" {% if request.path  == '/sitename/products/' %}style="background-color: #3f1e1e" {% endif %}  class="list-group-item">Все товары</a>
+
+                <span class="text-uppercase">Профиль</span>
+                <a href="{% url 'diplomapp:account' %}" {% if request.path  == '/sitename/account/' %}style="background-color: #3f1e1e"{% endif %} class="list-group-item active">Профиль</a>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'diplomapp:sitename_logout' %} " class="btn btn-red">Выйти</a>
+            </div>
+    {% else %}
+         <div class="text-center">
+             <img src="{% static 'img/best_shop.png' %}" width="90px"  height="90px " class="rounded-circle" alt="">
+            <br>
+            <br>
+         </div>
+         <div class="list-group ">
+                {% with total_items=cart|length %}
+                    {% if cart|length > 0 %}
+                       <span class="text-uppercase">Ваша корзина:</span>
+                        <a class="list-group-item" href="{% url "diplomapp:cart_detail" %}">
+                        {{ total_items }} {{ total_items|rupluralize:"товар,товара,товаров" }},
+                        {{ cart.get_total_price }} Грн.
+                        </a>
+                        <span class="text-uppercase">Панель</span>
+                    {% else %}
+                        <br>
+                        <br>
+                    {% endif %}
+                {% endwith %}
+
+
+                <a href="{% url 'diplomapp:products' %}" {% if request.path  == '/sitename/products/' %}style="background-color: #3f1e1e" {% endif %}  class="list-group-item ">Все товары</a>
+            </div>
+            <div class="text-center">
+                <a href="{% url 'diplomapp:sitename_login' %}" class="btn btn-red mb-2">Войти</a>
+
+                <a href="{% url 'diplomapp:sign_up' %}" class="btn btn-red mt-2">Зарегестрировать магазин</a>
+            </div>
+
+
+
+    {% endif %}
+
+{% endblock %}

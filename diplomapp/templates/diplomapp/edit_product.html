@@ -1,0 +1,35 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% block title %}
+    Изменить товар
+{% endblock %}
+{% block content %}
+    <div class="offset-lg-2 col-lg-8">
+        <div class="card">
+            <div class="card-header bg-ruby">
+                <h4 class="card-title text-center text-white">
+                    Изменить товар
+                </h4>
+            </div>
+            <div class="card-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                     {% csrf_token %}
+                        {% bootstrap_form form %}
+                    <br>
+                    {% for image in images %}
+                        <a href="{{ MEDIA_URL }}{{ image.product_image}}">
+                            <img src="{{ MEDIA_URL }}{{ image.product_image}}" alt="" style="height: 80px;width: 80px">
+                        </a>
+                         <a href="{% url 'diplomapp:delete_img' image.id %}">Удалить картинку</a>
+                        <br>
+                    {% endfor %}
+                    <br>
+                    {% bootstrap_form form_img %}
+
+                    
+                    <button type="submit" class="btn btn-red">Обновить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

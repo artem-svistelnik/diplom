@@ -1,0 +1,160 @@
+{% extends 'diplomapp/base.html' %}
+{% load  bootstrap4 %}
+{% load mptt_tags %}
+{% load rupluralize %}
+{% block title %}
+    Товары
+{% endblock %}
+
+{% block content %}
+{#  ##################3      #}
+    <div class="card">
+        <div class="card-header bg-ruby ">
+            {% if category != None %}
+                <h4 class="card-title text-center text-white">
+                    Предложения категории <b>{{category.name}}</b>
+                </h4>
+            {% elif shop != None %}
+                <h4 class="card-title text-center text-white">Товары магазина <b>{{shop.name}}</b></h4>
+            {% else %}
+                <h1 class="card-title text-center text-white">Товары и услуги</h1>
+            {% endif %}
+        </div>
+    </div>
+     <div class="offset-lg-2 col-lg-8  offset-md-2 col-md-10 col-sm-12 text-center">
+            <form class="p-2" action="." method="get">
+                    {% if shop != None and query %}
+                        <h3>По запросу "<b>{{ query }}</b>" {% if shop != None %}в магазине <a href="{% url 'diplomapp:shop_products' shop.slug shop.id %}">{{ shop }}</a>{% endif %}
+                            {% with products.count as total_results %}
+                                найдено {{ total_results }}  {{ total_results|rupluralize }}
+                            {% endwith %}
+                        </h3>
+                        <div class="form">
+                            {{ search_form.query }}
+                            <input type="submit" class="btn btn-primary" value="Поиск">
+                        </div>
+                    {% elif category != None and query %}
+                        <div class="form">
+                            <h3>По запросу "<b>{{ query }}</b>" {% if category != None %}в категории <a href="{% url 'diplomapp:product_on_category' category.id category.slug  %}">{{ category }}</a>{% endif %}
+                                {% with products.count as total_results %}
+                                    найдено {{ total_results }}  {{ total_results|rupluralize }}
+                                {% endwith %}
+                            </h3>
+                            {{ search_form.query }}
+                            <input type="submit" class="btn btn-primary" value="Поиск">
+                        </div>
+                    {% elif query %}
+                        <div class="form">
+                        <h3>По запросу "<b>{{ query }}</b>"
+                            {% with products.count as total_results %}
+                                найдено {{ total_results }}  {{ total_results|rupluralize }}
+                            {% endwith %}
+                        </h3>
+                            {{ search_form.query }}
+                            <input type="submit" class="btn btn-primary" value="Поиск">
+                        </div>
+                    {% else %}
+                        <h3 >Искать в товарах
+                            {% if shop != None %}магазина <a href="{% url 'diplomapp:shop_products' shop.slug shop.id %}">{{ shop }}</a>{% endif %}
+                            {% if category != None %}категории <a href="{% url 'diplomapp:product_on_category' category.id category.slug %}">{{ category }}</a>{% endif %}
+                        </h3>
+
+                        <div class="form">
+                            {{ search_form.query }}
+                            <input type="submit" class="btn btn-primary" value="Поиск">
+
+                        </div>
+
+                    {% endif %}
+            </form>
+     </div>
+
+<div class="wrapper">
+<div class="btn btn-red list-group-item" ><b>Категории</b></div>
+
+<div class="content-test">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light col-lg-12 col-md-12 col-sm-12">
+
+  <div class="collapse navbar-collapse " id="navbarNavDropdown">
+      <ul class="navbar-nav flex-column">
+          {% recursetree nodes %}
+          <li class="nav-item dropdown li-fixed">
+
+              <a href="{% url 'diplomapp:product_on_category' node.id node.slug %}" class="nav-link dropdown-toggle"  >
+                 {{ node.name }} {{ node.count_product }}
+              </a>
+                {% if not node.is_leaf_node %}
+
+                     <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+                        <ul class="children navbar-nav float-lg-left text-left">
+                            <li class="test-li">{{children }}</li>
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if node.is_root_node %}
+                        {% if not node.is_leaf_node %}
+                            <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+                            <ul class="children navbar-nav float-lg-left text-left">
+                                 <li class="test-li">{{children }}</li>
+                            </ul>
+                            </div>
+                        {% endif %}
+                {% endif %}
+
+
+
+{#                {% endif %}#}
+
+          </li>
+         {% endrecursetree %}
+    </ul>
+  </div>
+
+</nav>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+{#  ################################}
+
+        {% if products %}
+            <div class="container-fluid">
+                <div class="row">
+                    {% for product in products %}
+                        <div class="col-lg-4 col-md-6 col-sm-12 mt-lg-4">
+                            <div class="card card-size" >
+                                <div class="img-place text-center justify-content-center">
+                                    <img src="{{ MEDIA_URL }}{{ product.image }}" class="card-img-top img-size" alt="...">
+                                </div>
+                                <div class="card-body card-body-size">
+                                    <h5 class="card-title">
+                                        <span class="text-left">{{ product.product_name }}</span>
+
+                                    </h5>
+                                    <p class="card-text">{{ product.short_description|truncatewords:30}}
+
+                                    </p>
+                                    <a href="{% url 'home:product_detail' product.slug product.id %}" class="btn btn-primary btn-place">Посмотреть </a>
+                                    <h5 style="color: #e31E25;">{{product.price}} Грн.</h5>
+                                    <div  class="text-right">
+                                        {% if product.availability == False %}
+                                        <b  class="mr-4 p-1 bg-info">Отсутствует</b>
+                                        {% endif %}
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+{% endblock %}

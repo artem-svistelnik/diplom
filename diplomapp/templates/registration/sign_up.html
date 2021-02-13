@@ -1,0 +1,21 @@
+{% extends 'base_registration.html' %}
+{% load bootstrap4 %}
+{% block title %}
+    Sign up
+{% endblock %}
+{% block heading %}
+        <h2>Страница регистрации</h2>
+{% endblock %}
+{% block content %}
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>Владелец</h3>
+        {% bootstrap_form user_form %}
+        <hr>
+        <h3>Магазин</h3>
+        {% bootstrap_form shop_form %}
+        <button type="submit" class="btn btn-red  float-lg-right">Зарегистрировать</button>
+    </form>
+    <a href="{% url 'home:sitename_login' %}">У меня есть профиль </a>
+{% endblock %}
